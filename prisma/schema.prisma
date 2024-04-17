@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider              = "zod-prisma"
+  output                = "./zod"
+  relationModel         = true
+  modelCase             = "camelCase"
+  modelSuffix           = "Schema"
+  useDecimalJs          = true
+  prismaJsonNullability = true
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  lastName  String
+  email     String
+  password  String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Leader {
+  id         String  @id @default(cuid())
+  name       String
+  lastName   String
+  nationalId String
+  email      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  voters    Voter[]
+}
+
+model Voter {
+  id         String   @id @default(cuid())
+  name       String
+  lastName   String
+  nationalId String
+  school     String
+  township   String
+  leader     Leader   @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+  leaderId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([leaderId])
+}
