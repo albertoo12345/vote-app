@@ -7,27 +7,20 @@ type AdditionalLinks = {
 };
 
 export const defaultLinks: SidebarLink[] = [
-  { href: "/dashboard", title: "Home", icon: HomeIcon },
-  { href: "/account", title: "Account", icon: Cog },
-  { href: "/settings", title: "Settings", icon: Cog },
-];
+  { href: "/dashboard", title: "Estadisticas", icon: HomeIcon },
+  // { href: "/account", title: "Account", icon: Cog },
 
-export const additionalLinks: AdditionalLinks[] = [
   {
-    title: "Entities",
-    links: [
-      {
-        href: "/voters",
-        title: "Voters",
-        icon: Globe,
-      },
-      {
-        href: "/leaders",
-        title: "Leaders",
-        icon: Globe,
-      },
-    ],
+    href: "/voters",
+    title: "Voters",
+    icon: Globe,
   },
-
+  {
+    href: "/leaders",
+    title: "Leaders",
+    icon: Globe,
+  },
+  { href: "/settings", title: "Configuración", icon: Cog },
 ];
 
+export const additionalLinks: AdditionalLinks[] = [];
