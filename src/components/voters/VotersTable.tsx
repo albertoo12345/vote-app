@@ -31,9 +31,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Leader, Voter } from "@prisma/client";
 
-const columnHelper = createColumnHelper<Voter>();
+const columnHelper = createColumnHelper<Voter & { leader: Leader }>();
 
-export const columns: ColumnDef<Voter>[] = [
+export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
@@ -68,6 +68,24 @@ export const columns: ColumnDef<Voter>[] = [
       );
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("nationalId")}</div>,
+  },
+  {
+    accessorKey: "leader",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Dirigente
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="text-right font-medium">
+          {row.original.leader.name}, {row.original.leader.lastName}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "township",
@@ -114,7 +132,7 @@ export const columns: ColumnDef<Voter>[] = [
   // },
 ];
 
-export default function VotersTable(props: { voters: Voter[] }) {
+export default function VotersTable(props: { voters: (Voter & { leader: Leader })[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
