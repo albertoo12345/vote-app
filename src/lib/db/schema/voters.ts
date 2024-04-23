@@ -8,16 +8,12 @@ import { getVoters } from "@/lib/api/voters/queries";
 const baseSchema = voterSchema.omit(timestamps)
 
 export const insertVoterSchema = baseSchema.omit({ id: true });
-export const insertVoterParams = baseSchema.extend({
-  leaderId: z.coerce.string().min(1)
-}).omit({ 
+export const insertVoterParams = baseSchema.extend({}).omit({ 
   id: true
 });
 
 export const updateVoterSchema = baseSchema;
-export const updateVoterParams = updateVoterSchema.extend({
-  leaderId: z.coerce.string().min(1)
-})
+export const updateVoterParams = updateVoterSchema.extend({})
 export const voterIdSchema = baseSchema.pick({ id: true });
 
 // Types for voters - used to type API request params and within Components
