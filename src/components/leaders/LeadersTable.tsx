@@ -29,11 +29,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Leader, Voter } from "@prisma/client";
+import { Leader } from "@prisma/client";
 
-const columnHelper = createColumnHelper<Voter & { leader: Leader }>();
+const columnHelper = createColumnHelper<Leader>();
 
-export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
+export const columns: ColumnDef<Leader>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
@@ -70,39 +70,17 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("nationalId")}</div>,
   },
   {
-    accessorKey: "leader",
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Dirigente
+          Correo
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      return (
-        <div className="text-right font-medium">
-          {row.original.leader.name}, {row.original.leader.lastName}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "township",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Lugar de Votacion
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <div className="text-right font-medium">
-          {row.original.township}, {row.original.school}
-        </div>
-      );
+      return <div className="text-right font-medium">{row.original.email || "No tiene"}</div>;
     },
   },
   // {
@@ -132,14 +110,14 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
   // },
 ];
 
-export default function VotersTable(props: { voters: (Voter & { leader: Leader })[] }) {
+export default function LeadersTable(props: { leaders: Leader[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: props.voters,
+    data: props.leaders,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
