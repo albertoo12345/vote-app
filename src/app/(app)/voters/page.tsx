@@ -13,7 +13,7 @@ export default async function VotersPage() {
     <main>
       <div className="relative">
         <div className="flex justify-between">
-          <h1 className="font-semibold text-2xl my-2">Voters</h1>
+          <h1 className="font-semibold text-2xl my-2">Votantes</h1>
         </div>
         <Voters />
       </div>

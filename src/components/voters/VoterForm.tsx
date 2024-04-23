@@ -71,7 +71,6 @@ const VoterForm = ({
 
     const payload = Object.fromEntries(data.entries());
     const voterParsed = await insertVoterParams.safeParseAsync({ leaderId, ...payload });
-    console.log(voterParsed);
 
     if (!voterParsed.success) {
       setErrors(voterParsed?.error.flatten().fieldErrors);
@@ -135,7 +134,7 @@ const VoterForm = ({
       {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
       {/* Schema fields start */}
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Name</Label>
+        <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Nombre del Votante</Label>
         <Input
           type="text"
           id="name"
@@ -146,7 +145,7 @@ const VoterForm = ({
         {errors?.name ? <p className="text-xs text-destructive mt-2">{errors.name[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.lastName ? "text-destructive" : "")}>Last Name</Label>
+        <Label className={cn("mb-2 inline-block", errors?.lastName ? "text-destructive" : "")}>Apellido del Votante</Label>
         <Input
           type="text"
           id="lastName"
@@ -157,7 +156,7 @@ const VoterForm = ({
         {errors?.lastName ? <p className="text-xs text-destructive mt-2">{errors.lastName[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.nationalId ? "text-destructive" : "")}>National Id</Label>
+        <Label className={cn("mb-2 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cédula</Label>
         <Input
           type="text"
           id="nationalId"
@@ -168,27 +167,27 @@ const VoterForm = ({
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.school ? "text-destructive" : "")}>School</Label>
+        <Label className={cn("mb-2 inline-block", errors?.school ? "text-destructive" : "")}>Escuela</Label>
         <Input type="text" name="school" className={cn(errors?.school ? "ring ring-destructive" : "")} defaultValue={voter?.school ?? ""} />
         {errors?.school ? <p className="text-xs text-destructive mt-2">{errors.school[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.township ? "text-destructive" : "")}>Township</Label>
+        <Label className={cn("mb-2 inline-block", errors?.township ? "text-destructive" : "")}>Corregimiento</Label>
         <Input type="text" name="township" className={cn(errors?.township ? "ring ring-destructive" : "")} defaultValue={voter?.township ?? ""} />
         {errors?.township ? <p className="text-xs text-destructive mt-2">{errors.township[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.desk ? "text-destructive" : "")}>Desk</Label>
+        <Label className={cn("mb-2 inline-block", errors?.desk ? "text-destructive" : "")}>Mesa</Label>
         <Input type="text" name="desk" className={cn(errors?.desk ? "ring ring-destructive" : "")} defaultValue={voter?.desk ?? ""} />
         {errors?.desk ? <p className="text-xs text-destructive mt-2">{errors.desk[0]}</p> : <div className="h-6" />}
       </div>
 
       {leaderId ? null : (
         <div>
-          <Label className={cn("mb-2 inline-block", errors?.leaderId ? "text-destructive" : "")}>Leader</Label>
+          <Label className={cn("mb-2 inline-block", errors?.leaderId ? "text-destructive" : "")}>Dirigente Asignado</Label>
           <Select defaultValue={voter?.leaderId} name="leaderId">
             <SelectTrigger className={cn(errors?.leaderId ? "ring ring-destructive" : "")}>
-              <SelectValue placeholder="Select a leader" />
+              <SelectValue placeholder="Selecciona un Dirigente" />
             </SelectTrigger>
             <SelectContent>
               {leaders?.map((leader) => (
@@ -245,7 +244,7 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
 
   return (
     <Button type="submit" className="mr-2" disabled={isCreating || isUpdating || errors} aria-disabled={isCreating || isUpdating || errors}>
-      {editing ? `Sav${isUpdating ? "ing..." : "e"}` : `Creat${isCreating ? "ing..." : "e"}`}
+      {editing ? `${isUpdating ? "Actualizando Voto" : "Actualizar Voto"}` : `${isCreating ? "Creando Voto" : "Crear Voto"}`}
     </Button>
   );
 };

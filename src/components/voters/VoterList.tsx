@@ -28,8 +28,15 @@ export default function VoterList({ voters, leaders, leaderId }: { voters: Compl
 
   return (
     <div>
-      <Modal open={open} setOpen={setOpen} title={activeVoter ? "Edit Voter" : "Create Voter"}>
-        <VoterForm voter={activeVoter} addOptimistic={addOptimisticVoter} openModal={openModal} closeModal={closeModal} leaders={leaders} leaderId={leaderId} />
+      <Modal open={open} setOpen={setOpen} title={activeVoter ? "Editar Voto" : "Crear Voto"}>
+        <VoterForm
+          voter={activeVoter}
+          addOptimistic={addOptimisticVoter}
+          openModal={openModal}
+          closeModal={closeModal}
+          leaders={leaders}
+          leaderId={leaderId}
+        />
       </Modal>
       <div className="absolute right-0 top-0 ">
         <Button onClick={() => openModal()} variant={"outline"}>
@@ -60,7 +67,7 @@ const Voter = ({ voter, openModal }: { voter: CompleteVoter; openModal: TOpenMod
         <div>{voter.name}</div>
       </div>
       <Button variant={"link"} asChild>
-        <Link href={basePath + "/" + voter.id}>Edit</Link>
+        <Link href={basePath + "/" + voter.id}>Editar</Link>
       </Button>
     </li>
   );
@@ -69,11 +76,11 @@ const Voter = ({ voter, openModal }: { voter: CompleteVoter; openModal: TOpenMod
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No voters</h3>
-      <p className="mt-1 text-sm text-muted-foreground">Get started by creating a new voter.</p>
+      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No hay votos</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Registra un nuevo voto aquí</p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Voters{" "}
+          <PlusIcon className="h-4" /> Nuevo Voto{" "}
         </Button>
       </div>
     </div>
