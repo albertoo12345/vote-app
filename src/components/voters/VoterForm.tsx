@@ -186,7 +186,7 @@ const VoterForm = ({
             <SelectContent>
               {leaders?.map((leader) => (
                 <SelectItem key={leader.id} value={leader.id.toString()}>
-                  {leader.id}
+                  {leader.name} {leader.lastName} - {leader.nationalId}
                   {/* TODO: Replace with a field from the leader model */}
                 </SelectItem>
               ))}
