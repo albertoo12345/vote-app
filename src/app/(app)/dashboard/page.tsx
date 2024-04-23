@@ -37,7 +37,7 @@ export default async function DashboardPage() {
                 <CardDescription>Votos registrados por cada dirigente.</CardDescription>
               </CardHeader>
               <CardContent>
-                <RecentVotes />
+                {voters.length ? <RecentVotes /> : <div className="text-center text-muted-foreground">No hay votos registrados</div>}
               </CardContent>
             </Card>
           </div>
