@@ -41,11 +41,6 @@ export default function VoterList({ voters, leaders, leaderId }: { voters: Compl
       ) : (
         <>
           <VotersTable voters={optimisticVoters} />
-          <ul>
-            {optimisticVoters.map((voter) => (
-              <Voter voter={voter} key={voter.id} openModal={openModal} />
-            ))}
-          </ul>
         </>
       )}
     </div>
