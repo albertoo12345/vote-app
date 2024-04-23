@@ -71,6 +71,8 @@ const VoterForm = ({
 
     const payload = Object.fromEntries(data.entries());
     const voterParsed = await insertVoterParams.safeParseAsync({ leaderId, ...payload });
+    console.log(voterParsed);
+
     if (!voterParsed.success) {
       setErrors(voterParsed?.error.flatten().fieldErrors);
       return;
@@ -175,6 +177,11 @@ const VoterForm = ({
         <Input type="text" name="township" className={cn(errors?.township ? "ring ring-destructive" : "")} defaultValue={voter?.township ?? ""} />
         {errors?.township ? <p className="text-xs text-destructive mt-2">{errors.township[0]}</p> : <div className="h-6" />}
       </div>
+      <div>
+        <Label className={cn("mb-2 inline-block", errors?.desk ? "text-destructive" : "")}>Desk</Label>
+        <Input type="text" name="desk" className={cn(errors?.desk ? "ring ring-destructive" : "")} defaultValue={voter?.desk ?? ""} />
+        {errors?.desk ? <p className="text-xs text-destructive mt-2">{errors.desk[0]}</p> : <div className="h-6" />}
+      </div>
 
       {leaderId ? null : (
         <div>
@@ -235,6 +242,7 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
   const { pending } = useFormStatus();
   const isCreating = pending && editing === false;
   const isUpdating = pending && editing === true;
+
   return (
     <Button type="submit" className="mr-2" disabled={isCreating || isUpdating || errors} aria-disabled={isCreating || isUpdating || errors}>
       {editing ? `Sav${isUpdating ? "ing..." : "e"}` : `Creat${isCreating ? "ing..." : "e"}`}
