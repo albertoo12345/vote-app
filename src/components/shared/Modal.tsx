@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Modal({
   title,
@@ -18,7 +13,7 @@ export default function Modal({
 }) {
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogContent>
+      <DialogContent className="max-h-[700px] overflow-auto">
         <DialogHeader className="px-5 pt-5">
           <DialogTitle>{title ?? "Modal"}</DialogTitle>
         </DialogHeader>
