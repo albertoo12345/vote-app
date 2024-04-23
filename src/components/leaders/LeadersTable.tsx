@@ -110,7 +110,7 @@ export const columns: ColumnDef<Leader>[] = [
   // },
 ];
 
-export default function VotersTable(props: { leaders: Leader[] }) {
+export default function LeadersTable(props: { leaders: Leader[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
