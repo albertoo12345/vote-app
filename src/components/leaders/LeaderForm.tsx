@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { set, z } from "zod";
 
 import { useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
@@ -14,18 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 
-
-
 import { type Leader, insertLeaderParams } from "@/lib/db/schema/leaders";
-import {
-  createLeaderAction,
-  deleteLeaderAction,
-  updateLeaderAction,
-} from "@/lib/actions/leaders";
-
+import { createLeaderAction, deleteLeaderAction, updateLeaderAction } from "@/lib/actions/leaders";
+import QRScanner from "../qrScanner";
 
 const LeaderForm = ({
-  
   leader,
   openModal,
   closeModal,
@@ -33,27 +26,23 @@ const LeaderForm = ({
   postSuccess,
 }: {
   leader?: Leader | null;
-  
+
   openModal?: (leader?: Leader) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } =
-    useValidatedForm<Leader>(insertLeaderParams);
+  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Leader>(insertLeaderParams);
   const editing = !!leader?.id;
-  
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
-
+  const [qrError, setQrError] = useState("");
+  const [qrMode, setQrMode] = useState(false);
   const router = useRouter();
   const backpath = useBackPath("leaders");
 
-
-  const onSuccess = (
-    action: Action,
-    data?: { error: string; values: Leader },
-  ) => {
+  const onSuccess = (action: Action, data?: { error: string; values: Leader }) => {
     const failed = Boolean(data?.error);
     if (failed) {
       openModal && openModal(data?.values);
@@ -72,7 +61,7 @@ const LeaderForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const leaderParsed = await insertLeaderParams.safeParseAsync({  ...payload });
+    const leaderParsed = await insertLeaderParams.safeParseAsync({ ...payload });
     if (!leaderParsed.success) {
       setErrors(leaderParsed?.error.flatten().fieldErrors);
       return;
@@ -88,23 +77,19 @@ const LeaderForm = ({
     };
     try {
       startMutation(async () => {
-        addOptimistic && addOptimistic({
-          data: pendingLeader,
-          action: editing ? "update" : "create",
-        });
+        addOptimistic &&
+          addOptimistic({
+            data: pendingLeader,
+            action: editing ? "update" : "create",
+          });
 
-        const error = editing
-          ? await updateLeaderAction({ ...values, id: leader.id })
-          : await createLeaderAction(values);
+        const error = editing ? await updateLeaderAction({ ...values, id: leader.id }) : await createLeaderAction(values);
 
         const errorFormatted = {
           error: error ?? "Error",
-          values: pendingLeader 
+          values: pendingLeader,
         };
-        onSuccess(
-          editing ? "update" : "create",
-          error ? errorFormatted : undefined,
-        );
+        onSuccess(editing ? "update" : "create", error ? errorFormatted : undefined);
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -113,92 +98,68 @@ const LeaderForm = ({
     }
   };
 
+  const qrScanner = qrMode && (
+    <QRScanner
+      onResult={(text) => {
+        const splittedText = text.split("|");
+        if (splittedText.length !== 17) {
+          setQrError("Hubo un error al escanear tu cédula, intenta manualmente");
+          return;
+        }
+        const nationalId = splittedText[0];
+        const name = splittedText[1];
+        const lastName = splittedText[2];
+
+        // Set values after 1 second to avoid flickering
+        setTimeout(() => {
+          setQrMode(false);
+          document.getElementById("nationalId")?.setAttribute("value", nationalId);
+          document.getElementById("name")?.setAttribute("value", name);
+          document.getElementById("lastName")?.setAttribute("value", lastName);
+        }, 1000);
+        return;
+      }}
+    />
+  );
+
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
+      <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
+        Rellena con QR
+      </Button>
+      {qrScanner}
       {/* Schema fields start */}
-              <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.name ? "text-destructive" : "",
-          )}
-        >
-          Name
-        </Label>
-        <Input
-          type="text"
-          name="name"
-          className={cn(errors?.name ? "ring ring-destructive" : "")}
-          defaultValue={leader?.name ?? ""}
-        />
-        {errors?.name ? (
-          <p className="text-xs text-destructive mt-2">{errors.name[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
+      <div>
+        <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Name</Label>
+        <Input type="text" id="name" name="name" className={cn(errors?.name ? "ring ring-destructive" : "")} defaultValue={leader?.name ?? ""} />
+        {errors?.name ? <p className="text-xs text-destructive mt-2">{errors.name[0]}</p> : <div className="h-6" />}
       </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.lastName ? "text-destructive" : "",
-          )}
-        >
-          Last Name
-        </Label>
+      <div>
+        <Label className={cn("mb-2 inline-block", errors?.lastName ? "text-destructive" : "")}>Last Name</Label>
         <Input
           type="text"
+          id="lastName"
           name="lastName"
           className={cn(errors?.lastName ? "ring ring-destructive" : "")}
           defaultValue={leader?.lastName ?? ""}
         />
-        {errors?.lastName ? (
-          <p className="text-xs text-destructive mt-2">{errors.lastName[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
+        {errors?.lastName ? <p className="text-xs text-destructive mt-2">{errors.lastName[0]}</p> : <div className="h-6" />}
       </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.nationalId ? "text-destructive" : "",
-          )}
-        >
-          National Id
-        </Label>
+      <div>
+        <Label className={cn("mb-2 inline-block", errors?.nationalId ? "text-destructive" : "")}>National Id</Label>
         <Input
           type="text"
+          id="nationalId"
           name="nationalId"
           className={cn(errors?.nationalId ? "ring ring-destructive" : "")}
           defaultValue={leader?.nationalId ?? ""}
         />
-        {errors?.nationalId ? (
-          <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
+        {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-6" />}
       </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.email ? "text-destructive" : "",
-          )}
-        >
-          Email
-        </Label>
-        <Input
-          type="text"
-          name="email"
-          className={cn(errors?.email ? "ring ring-destructive" : "")}
-          defaultValue={leader?.email ?? ""}
-        />
-        {errors?.email ? (
-          <p className="text-xs text-destructive mt-2">{errors.email[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
+      <div>
+        <Label className={cn("mb-2 inline-block", errors?.email ? "text-destructive" : "")}>Email</Label>
+        <Input type="text" name="email" className={cn(errors?.email ? "ring ring-destructive" : "")} defaultValue={leader?.email ?? ""} />
+        {errors?.email ? <p className="text-xs text-destructive mt-2">{errors.email[0]}</p> : <div className="h-6" />}
       </div>
       {/* Schema fields end */}
 
@@ -236,26 +197,13 @@ const LeaderForm = ({
 
 export default LeaderForm;
 
-const SaveButton = ({
-  editing,
-  errors,
-}: {
-  editing: Boolean;
-  errors: boolean;
-}) => {
+const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) => {
   const { pending } = useFormStatus();
   const isCreating = pending && editing === false;
   const isUpdating = pending && editing === true;
   return (
-    <Button
-      type="submit"
-      className="mr-2"
-      disabled={isCreating || isUpdating || errors}
-      aria-disabled={isCreating || isUpdating || errors}
-    >
-      {editing
-        ? `Sav${isUpdating ? "ing..." : "e"}`
-        : `Creat${isCreating ? "ing..." : "e"}`}
+    <Button type="submit" className="mr-2" disabled={isCreating || isUpdating || errors} aria-disabled={isCreating || isUpdating || errors}>
+      {editing ? `Sav${isUpdating ? "ing..." : "e"}` : `Creat${isCreating ? "ing..." : "e"}`}
     </Button>
   );
 };
