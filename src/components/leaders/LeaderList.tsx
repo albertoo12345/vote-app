@@ -28,7 +28,7 @@ export default function LeaderList({ leaders }: { leaders: CompleteLeader[] }) {
 
   return (
     <div>
-      <Modal open={open} setOpen={setOpen} title={activeLeader ? "Edit Leader" : "Create Leader"}>
+      <Modal open={open} setOpen={setOpen} title={activeLeader ? "Editar Dirigente" : "Crear Dirigente"}>
         <LeaderForm leader={activeLeader} addOptimistic={addOptimisticLeader} openModal={openModal} closeModal={closeModal} />
       </Modal>
       <div className="absolute right-0 top-0 ">
@@ -54,7 +54,7 @@ const Leader = ({ leader, openModal }: { leader: CompleteLeader; openModal: TOpe
         <div>{leader.name}</div>
       </div>
       <Button variant={"link"} asChild>
-        <Link href={basePath + "/" + leader.id}>Edit</Link>
+        <Link href={basePath + "/" + leader.id}>Editar</Link>
       </Button>
     </li>
   );
@@ -63,11 +63,11 @@ const Leader = ({ leader, openModal }: { leader: CompleteLeader; openModal: TOpe
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No leaders</h3>
-      <p className="mt-1 text-sm text-muted-foreground">Get started by creating a new leader.</p>
+      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No hay dirigentes</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Crea un nuevo dirigente aqui.</p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Leaders{" "}
+          <PlusIcon className="h-4" /> Nuevo Dirigente{" "}
         </Button>
       </div>
     </div>
