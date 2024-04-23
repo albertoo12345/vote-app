@@ -4,6 +4,7 @@ import Loading from "@/app/loading";
 import VoterList from "@/components/voters/VoterList";
 import { getVoters } from "@/lib/api/voters/queries";
 import { getLeaders } from "@/lib/api/leaders/queries";
+import VotersTable from "@/components/voters/VotersTable";
 
 export const revalidate = 0;
 
@@ -21,12 +22,12 @@ export default async function VotersPage() {
 }
 
 const Voters = async () => {
-  
   const { voters } = await getVoters();
   const { leaders } = await getLeaders();
   return (
     <Suspense fallback={<Loading />}>
-      <VoterList voters={voters} leaders={leaders} />
+      <VotersTable />
+      {/* <VoterList voters={voters} leaders={leaders} /> */}
     </Suspense>
   );
 };
