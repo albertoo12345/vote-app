@@ -38,6 +38,9 @@ const LeaderForm = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
   const [qrError, setQrError] = useState("");
+  const [nationalId, setNationalId] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [qrMode, setQrMode] = useState(false);
   const router = useRouter();
   const backpath = useBackPath("leaders");
@@ -98,40 +101,40 @@ const LeaderForm = ({
     }
   };
 
-  const qrScanner = qrMode && (
-    <QRScanner
-      onResult={(text) => {
-        const splittedText = text.split("|");
-        if (splittedText.length !== 17) {
-          setQrError("Hubo un error al escanear tu cédula, intenta manualmente");
-          return;
-        }
-        const nationalId = splittedText[0];
-        const name = splittedText[1];
-        const lastName = splittedText[2];
+  const handleQRScan = (text: string) => {
+    const splittedText = text.split("|");
+    if (splittedText.length !== 17) {
+      setQrError("Hubo un error al escanear tu cédula, intenta manualmente");
+      return;
+    }
+    const newNationalId = splittedText[0];
+    const newName = splittedText[1];
+    const newLastName = splittedText[2];
 
-        // Set values after 1 second to avoid flickering
-        setTimeout(() => {
-          setQrMode(false);
-          document.getElementById("nationalId")?.setAttribute("value", nationalId);
-          document.getElementById("name")?.setAttribute("value", name);
-          document.getElementById("lastName")?.setAttribute("value", lastName);
-        }, 1000);
-        return;
-      }}
-    />
-  );
+    // Set values after 1 second to avoid flickering
+    setQrMode(false);
+    setNationalId(newNationalId);
+    setName(newName);
+    setLastName(newLastName);
 
+    return;
+  };
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
       <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
         Rellena con QR
       </Button>
-      {qrScanner}
+      {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
       {/* Schema fields start */}
       <div>
         <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Name</Label>
-        <Input type="text" id="name" name="name" className={cn(errors?.name ? "ring ring-destructive" : "")} defaultValue={leader?.name ?? ""} />
+        <Input
+          type="text"
+          id="name"
+          name="name"
+          className={cn(errors?.name ? "ring ring-destructive" : "")}
+          defaultValue={leader?.name || name || ""}
+        />
         {errors?.name ? <p className="text-xs text-destructive mt-2">{errors.name[0]}</p> : <div className="h-6" />}
       </div>
       <div>
@@ -141,7 +144,7 @@ const LeaderForm = ({
           id="lastName"
           name="lastName"
           className={cn(errors?.lastName ? "ring ring-destructive" : "")}
-          defaultValue={leader?.lastName ?? ""}
+          defaultValue={leader?.lastName || lastName || ""}
         />
         {errors?.lastName ? <p className="text-xs text-destructive mt-2">{errors.lastName[0]}</p> : <div className="h-6" />}
       </div>
@@ -152,7 +155,7 @@ const LeaderForm = ({
           id="nationalId"
           name="nationalId"
           className={cn(errors?.nationalId ? "ring ring-destructive" : "")}
-          defaultValue={leader?.nationalId ?? ""}
+          defaultValue={leader?.nationalId || nationalId || ""}
         />
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-6" />}
       </div>
