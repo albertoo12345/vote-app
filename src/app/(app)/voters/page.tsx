@@ -26,8 +26,7 @@ const Voters = async () => {
   const { leaders } = await getLeaders();
   return (
     <Suspense fallback={<Loading />}>
-      <VotersTable />
-      {/* <VoterList voters={voters} leaders={leaders} /> */}
+      <VoterList voters={voters} leaders={leaders} />
     </Suspense>
   );
 };

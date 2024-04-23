@@ -8,13 +8,13 @@ export const voterSchema = z.object({
   nationalId: z.string(),
   school: z.string(),
   township: z.string(),
-  leaderId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  leaderId: z.string().nullish(),
 })
 
 export interface CompleteVoter extends z.infer<typeof voterSchema> {
-  leader: CompleteLeader
+  Leader?: CompleteLeader | null
 }
 
 /**
@@ -23,5 +23,5 @@ export interface CompleteVoter extends z.infer<typeof voterSchema> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const relatedVoterSchema: z.ZodSchema<CompleteVoter> = z.lazy(() => voterSchema.extend({
-  leader: relatedLeaderSchema,
+  Leader: relatedLeaderSchema.nullish(),
 }))
