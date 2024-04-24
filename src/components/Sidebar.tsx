@@ -13,7 +13,7 @@ const Sidebar = async () => {
     <aside className="h-screen min-w-52 bg-muted hidden md:block p-4 pt-8 border-r border-border shadow-inner">
       <div className="flex flex-col justify-between h-full">
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold ml-4">Logo</h3>
+          <h3 className="text-lg font-semibold ml-4">Vote App</h3>
           <SidebarItems />
         </div>
         <UserDetails session={session} />
@@ -29,7 +29,6 @@ const UserDetails = async ({ session }: { session: AuthSession }) => {
   const { user } = session.session;
   const clerkUser = await clerkClient.users.getUser(user.id);
   if (!user?.name || user.name.length == 0) return null;
-  console.log(session);
 
   return (
     <Link href="/account">

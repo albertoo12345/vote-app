@@ -81,8 +81,8 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
-          {row.original.leader.name}, {row.original.leader.lastName}
+        <div className="text-left  font-medium">
+          {row.original.leader.name} {row.original.leader.lastName}
         </div>
       );
     },
@@ -99,7 +99,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
+        <div className="text-left font-medium">
           {row.original.township}, {row.original.school}
         </div>
       );
@@ -131,6 +131,14 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
   //   },
   // },
 ];
+
+const translations = {
+  name: "Votante",
+  nationalId: "Cedula",
+  leader: "Dirigente",
+  township: "Lugar de Votacion",
+  desk: "Mesa",
+};
 
 export default function VotersTable(props: { voters: (Voter & { leader: Leader })[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -171,7 +179,7 @@ export default function VotersTable(props: { voters: (Voter & { leader: Leader }
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+              Ver/Ocultar Columnas <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -186,7 +194,7 @@ export default function VotersTable(props: { voters: (Voter & { leader: Leader }
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
-                    {column.id}
+                    {translations[column.id as keyof typeof translations]}
                   </DropdownMenuCheckboxItem>
                 );
               })}
