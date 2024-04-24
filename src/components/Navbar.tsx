@@ -27,11 +27,7 @@ export default function Navbar() {
               <li key={link.title} onClick={() => setOpen(false)} className="">
                 <Link
                   href={link.href}
-                  className={
-                    pathname === link.href
-                      ? "text-primary hover:text-primary font-semibold"
-                      : "text-muted-foreground hover:text-primary"
-                  }
+                  className={pathname === link.href ? "text-primary hover:text-primary font-semibold" : "text-muted-foreground hover:text-primary"}
                 >
                   {link.title}
                 </Link>

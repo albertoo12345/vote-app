@@ -127,7 +127,7 @@ const LeaderForm = ({
       {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
       {/* Schema fields start */}
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Name</Label>
+        <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Nombre</Label>
         <Input
           type="text"
           id="name"
@@ -138,7 +138,7 @@ const LeaderForm = ({
         {errors?.name ? <p className="text-xs text-destructive mt-2">{errors.name[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.lastName ? "text-destructive" : "")}>Last Name</Label>
+        <Label className={cn("mb-2 inline-block", errors?.lastName ? "text-destructive" : "")}>Apellido</Label>
         <Input
           type="text"
           id="lastName"
@@ -149,7 +149,7 @@ const LeaderForm = ({
         {errors?.lastName ? <p className="text-xs text-destructive mt-2">{errors.lastName[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.nationalId ? "text-destructive" : "")}>National Id</Label>
+        <Label className={cn("mb-2 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cédula</Label>
         <Input
           type="text"
           id="nationalId"
@@ -160,7 +160,7 @@ const LeaderForm = ({
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.email ? "text-destructive" : "")}>Email</Label>
+        <Label className={cn("mb-2 inline-block", errors?.email ? "text-destructive" : "")}>Correo</Label>
         <Input type="text" name="email" className={cn(errors?.email ? "ring ring-destructive" : "")} defaultValue={leader?.email ?? ""} />
         {errors?.email ? <p className="text-xs text-destructive mt-2">{errors.email[0]}</p> : <div className="h-6" />}
       </div>
@@ -206,7 +206,7 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
   const isUpdating = pending && editing === true;
   return (
     <Button type="submit" className="mr-2" disabled={isCreating || isUpdating || errors} aria-disabled={isCreating || isUpdating || errors}>
-      {editing ? `Sav${isUpdating ? "ing..." : "e"}` : `Creat${isCreating ? "ing..." : "e"}`}
+      {editing ? `${isUpdating ? "Actualizando Dirigente" : "Actualizar Dirigente"}` : `${isCreating ? "Creando Dirigente" : "Crear Dirigente"}`}
     </Button>
   );
 };

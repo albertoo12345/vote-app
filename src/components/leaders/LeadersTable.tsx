@@ -80,7 +80,7 @@ export const columns: ColumnDef<Leader>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="text-right font-medium">{row.original.email || "No tiene"}</div>;
+      return <div className="text-left font-medium">{row.original.email || "No tiene"}</div>;
     },
   },
   // {
@@ -109,6 +109,13 @@ export const columns: ColumnDef<Leader>[] = [
   //   },
   // },
 ];
+
+const translations = {
+  name: "Nombre",
+  lastName: "Apellido",
+  nationalId: "Cedula",
+  email: "Correo",
+};
 
 export default function LeadersTable(props: { leaders: Leader[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -149,7 +156,7 @@ export default function LeadersTable(props: { leaders: Leader[] }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+              Ver/Ocultar Columnas <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -164,7 +171,7 @@ export default function LeadersTable(props: { leaders: Leader[] }) {
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
-                    {column.id}
+                    {translations[column.id as keyof typeof translations]}
                   </DropdownMenuCheckboxItem>
                 );
               })}
