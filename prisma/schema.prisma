@@ -40,7 +40,6 @@ model Leader {
   nationalId String
   email      String?
 
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   voters    Voter[]
@@ -60,5 +59,6 @@ model Voter {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@index([leaderId])
 }
