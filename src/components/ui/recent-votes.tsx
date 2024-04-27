@@ -15,26 +15,28 @@ export async function RecentVotes() {
 
   return (
     <div className="space-y-8">
-      {leadersWithVoters.map((leader) => {
-        return (
-          <div key={leader.id} className="flex items-center">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="/avatars/01.png" alt="Avatar" />
-              <AvatarFallback>
-                {leader.name[0]}
-                {leader.lastName[0]}
-              </AvatarFallback>
-            </Avatar>
-            <div className="ml-4 space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {leader.name} {leader.lastName}
-              </p>
-              <p className="text-sm text-muted-foreground">{leader.nationalId}</p>
+      {leadersWithVoters
+        .sort((l1, l2) => l2.voters.length - l1.voters.length)
+        .map((leader) => {
+          return (
+            <div key={leader.id} className="flex items-center">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                <AvatarFallback>
+                  {leader.name[0]}
+                  {leader.lastName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div className="ml-4 space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {leader.name} {leader.lastName}
+                </p>
+                <p className="text-sm text-muted-foreground">{leader.nationalId}</p>
+              </div>
+              <div className="ml-auto font-medium">{leader.voters.length}</div>
             </div>
-            <div className="ml-auto font-medium">{voters.length}</div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }
