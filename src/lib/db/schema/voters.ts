@@ -9,7 +9,6 @@ const baseSchema = voterSchema.omit(timestamps)
 
 export const insertVoterSchema = baseSchema.omit({ id: true });
 export const insertVoterParams = baseSchema.extend({
-  voted: z.coerce.boolean(),
   leaderId: z.coerce.string().min(1)
 }).omit({ 
   id: true
@@ -17,7 +16,6 @@ export const insertVoterParams = baseSchema.extend({
 
 export const updateVoterSchema = baseSchema;
 export const updateVoterParams = updateVoterSchema.extend({
-  voted: z.coerce.boolean(),
   leaderId: z.coerce.string().min(1)
 })
 export const voterIdSchema = baseSchema.pick({ id: true });

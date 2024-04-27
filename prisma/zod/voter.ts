@@ -9,7 +9,6 @@ export const voterSchema = z.object({
   school: z.string(),
   township: z.string(),
   desk: z.string(),
-  voted: z.boolean().nullish(),
   leaderId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
