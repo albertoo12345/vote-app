@@ -34,11 +34,12 @@ model User {
 }
 
 model Leader {
-  id         String  @id @default(cuid())
+  id         String @id @default(cuid())
   name       String
   lastName   String
   nationalId String
-  email      String?
+  email      String
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,19 +47,17 @@ model Leader {
 }
 
 model Voter {
-  id         String   @id @default(cuid())
+  id         String @id @default(cuid())
   name       String
   lastName   String
   nationalId String
   school     String
   township   String
   desk       String
-  voted      Boolean?
-  leader     Leader   @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+  leader     Leader @relation(fields: [leaderId], references: [id], onDelete: Cascade)
   leaderId   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([leaderId])
 }

@@ -6,7 +6,7 @@ export const leaderSchema = z.object({
   name: z.string(),
   lastName: z.string(),
   nationalId: z.string(),
-  email: z.string().nullish(),
+  email: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
