@@ -37,9 +37,9 @@ export default function HomePage() {
         {modalType === "leader" ? <LeaderVote /> : <VoterVote />}
       </Modal>
       <div className="flex flex-col justify-center items-center h-full gap-7">
-        <div className="">
-          <h1 className="text-xl font-bold">Vielka Cortés</h1>
-          <span>Registro de Votos</span>
+        <div className="text-center">
+          <h1 className="text-4xl font-bold">Vielka Cortés</h1>
+          <span className="italic">Registro de Votos</span>
         </div>
         <Button onClick={() => openModal("leader")} className="h-fit text-wrap">
           Agregar Voto con Dirigente

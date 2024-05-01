@@ -9,22 +9,24 @@ export async function POST(req: Request, { params }: { params: { leaderNationalI
   try {
     const { leaderNationalId } = params;
     if (!leaderNationalId) {
-      return NextResponse.json({ error: "Missing leaderNationalId" }, { status: 400 });
+      return NextResponse.json({ error: "ID de Activista Vacío" }, { status: 400 });
     }
 
     const { leader: dbLeader } = await getLeaderByNationalId(leaderNationalId);
-
     if (!dbLeader) {
       const leaderCrawledData = await getPanamanianData(leaderNationalId);
       const name = leaderCrawledData.name.split(" ")[0];
       const lastName = leaderCrawledData.name.split(" ")[2];
+
       const data: NewLeaderParams = {
         nationalId: leaderCrawledData.nationalId,
         name: name,
         lastName: lastName,
         email: "",
       };
+
       const { leader: newLeader, success } = await createLeader(data);
+
       if (success) {
         return NextResponse.json({ leader: newLeader, success }, { status: 201 });
       }
@@ -33,11 +35,10 @@ export async function POST(req: Request, { params }: { params: { leaderNationalI
     return NextResponse.json({ leader: dbLeader, success: true }, { status: 201 });
   } catch (err) {
     console.log(err);
-
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 });
+      return NextResponse.json({ error: "Error al llenar los campos de los Activistas", zodErrors: err.issues }, { status: 400 });
     } else {
-      return NextResponse.json({ error: err }, { status: 500 });
+      return NextResponse.json({ error: "Error Desconocido", err }, { status: 500 });
     }
   }
 }
@@ -46,21 +47,21 @@ export async function GET(req: Request, { params }: { params: { leaderNationalId
   try {
     const { leaderNationalId } = params;
     if (!leaderNationalId) {
-      return NextResponse.json({ error: "Missing leaderNationalId" }, { status: 400 });
+      return NextResponse.json({ error: "ID del Activista Vacío" }, { status: 400 });
     }
 
     const { leader: dbLeader } = await getLeaderByNationalId(leaderNationalId);
 
     if (!dbLeader) {
-      return NextResponse.json({ error: "Leader not found" }, { status: 404 });
+      return NextResponse.json({ error: "El Líder no fue encontrado" }, { status: 404 });
     }
 
     return NextResponse.json({ leader: dbLeader, success: true }, { status: 200 });
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 });
+      return NextResponse.json({ error: "Error al llenar los campos", zodErrors: err.issues }, { status: 400 });
     } else {
-      return NextResponse.json({ error: err }, { status: 500 });
+      return NextResponse.json({ error: "Error Desconocido", err }, { status: 500 });
     }
   }
 }

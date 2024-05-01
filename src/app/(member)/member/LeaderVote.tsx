@@ -32,6 +32,16 @@ export default function LeaderVote() {
         <Input type="text" id="nationalId" name="nationalId" className={cn(errors?.nationalId ? "ring ring-destructive" : "")} defaultValue={""} />
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-0" />}
         <Button>Buscar Dirigente por Cédula</Button>
+        <Button
+          type="button"
+          onClick={() => {
+            setModalType("qr");
+            setQrOpen(true);
+          }}
+          className="h-fit"
+        >
+          Buscar por Código QR
+        </Button>
       </form>
     );
   }
@@ -53,22 +63,27 @@ export default function LeaderVote() {
       {qrOpen && <QRScanner components={{ tracker: qrOpen }} onResult={handleQRScan} />}
       <Button
         onClick={() => {
-          setModalType("qr");
-          setQrOpen(true);
-        }}
-        className="text-lg text-wrap"
-      >
-        Buscar por Código QR
-      </Button>
-      <Button
-        onClick={() => {
           setModalType("manual");
           setQrOpen(false);
         }}
-        className="text-lg text-wrap"
+        className="h-fit"
       >
         Ingresar Cédula manualmente
       </Button>
+      {
+        !qrOpen &&(
+
+      <Button
+        onClick={() => {
+          setModalType("qr");
+          setQrOpen(true);
+        }}
+        className="h-fit"
+      >
+        Buscar por Código QR
+      </Button>
+        )
+      }
     </div>
   );
 }
