@@ -35,4 +35,11 @@ export const getUserAuth = async () => {
 export const checkAuth = async () => {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
+
+  const memberships = await clerkClient.users.getOrganizationMembershipList({ userId });
+  const role = memberships[0].role;
+  return {
+    userId,
+    role,
+  };
 };
