@@ -24,7 +24,7 @@ const Sidebar = async () => {
 
 export default Sidebar;
 
-const UserDetails = async ({ session }: { session: AuthSession }) => {
+export const UserDetails = async ({ session }: { session: AuthSession }) => {
   if (session.session === null) return null;
   const { user } = session.session;
   const clerkUser = await clerkClient.users.getUser(user.id);
