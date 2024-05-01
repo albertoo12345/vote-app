@@ -9,19 +9,25 @@ export const getLeaders = async () => {
 export const getLeaderById = async (id: LeaderId) => {
   const { id: leaderId } = leaderIdSchema.parse({ id });
   const l = await db.leader.findFirst({
-    where: { id: leaderId}});
+    where: { id: leaderId },
+  });
+  return { leader: l };
+};
+export const getLeaderByNationalId = async (nationalId: string) => {
+  const l = await db.leader.findFirst({
+    where: { nationalId },
+  });
   return { leader: l };
 };
 
 export const getLeaderByIdWithVoters = async (id: LeaderId) => {
   const { id: leaderId } = leaderIdSchema.parse({ id });
   const l = await db.leader.findFirst({
-    where: { id: leaderId},
-    include: { voters: { include: {leader: true } } }
+    where: { id: leaderId },
+    include: { voters: { include: { leader: true } } },
   });
   if (l === null) return { leader: null };
   const { voters, ...leader } = l;
 
-  return { leader, voters:voters };
+  return { leader, voters: voters };
 };
-

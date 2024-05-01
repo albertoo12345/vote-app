@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 import { cn, nationalIdSchema } from "@/lib/utils";
+import { Leader } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
@@ -94,23 +96,36 @@ function VoterVote() {
 function LeaderVote() {
   const [qrOpen, setQrOpen] = useState(false);
   const [modalType, setModalType] = useState<"qr" | "manual" | "">("");
-  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<{ nationalId: string }>(nationalIdSchema);
-
-  const handleQRScan = (data: string) => {
+  const { errors, hasErrors, handleChange } = useValidatedForm<{ nationalId: string }>(nationalIdSchema);
+  const router = useRouter();
+  const handleQRScan = async (data: string) => {
     console.log("QR Data", data);
     setQrOpen(false);
+    const nationalId = data.split("|")[0];
+    const response = await fetch(`/api/leaders/${nationalId}`, {
+      method: "POST",
+    });
+    const responseData = (await response.json()) as { success: true; leader: Leader };
+    console.log(responseData);
+
+    router.push(`/leaderVote/${responseData.leader.nationalId}`);
   };
-  const handleSubmit = (data: FormData) => {
-    console.log(data.get("cedula"));
+  const handleSubmit = async (data: FormData) => {
+    const nationalId = data.get("nationalId");
+    const response = await fetch(`/api/leaders/${nationalId}`, {
+      method: "POST",
+    });
+    const responseData = (await response.json()) as { success: true; leader: Leader };
+    router.push(`/leaderVote/${responseData.leader.nationalId}`);
   };
 
   if (modalType === "manual") {
     return (
       <form action={handleSubmit} onChange={handleChange} className="flex flex-col justify-center items-center h-full gap-3">
-        <Label className={cn("mb-3 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Votante</Label>
+        <Label className={cn("mb-3 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Dirigente</Label>
         <Input type="text" id="nationalId" name="nationalId" className={cn(errors?.nationalId ? "ring ring-destructive" : "")} defaultValue={""} />
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-0" />}
-        <Button>Buscar Votante por Cédula</Button>
+        <Button>Buscar Dirigente por Cédula</Button>
       </form>
     );
   }
