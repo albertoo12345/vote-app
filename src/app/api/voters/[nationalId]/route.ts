@@ -17,7 +17,6 @@ export async function POST(req: Request, context: { params: { nationalId: string
     if (leaderId === "noExist") {
       const { leaders } = await getLeaders();
       const noExistLeader = leaders.filter((leader) => leader.name === "noExist");
-      console.log(noExistLeader);
 
       leaderId = noExistLeader[0].id;
     }
@@ -28,6 +27,7 @@ export async function POST(req: Request, context: { params: { nationalId: string
     }
 
     const { voter: dbVoter } = await getVoterByNationalId(nationalId);
+
     if (!dbVoter) {
       const voterCrawledData = await getPanamanianData(nationalId);
       const name = voterCrawledData.name.split(" ")[0];
@@ -49,6 +49,30 @@ export async function POST(req: Request, context: { params: { nationalId: string
       }
     } else {
       return NextResponse.json({ error: "El votante ya existe" }, { status: 400 });
+    }
+  } catch (err) {
+    console.log(err);
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ error: "Error al llenar los campos", zodErrors: err.issues }, { status: 400 });
+    } else {
+      return NextResponse.json({ error: "Error Desconocido", err }, { status: 500 });
+    }
+  }
+}
+
+export async function GET(req: Request, context: { params: { nationalId: string } }) {
+  try {
+    const { nationalId } = context.params;
+    if (!nationalId) {
+      return NextResponse.json({ error: "Cédula Invalida" }, { status: 400 });
+    }
+
+    const { voter } = await getVoterByNationalId(nationalId);
+
+    if (voter) {
+      return NextResponse.json({ voter }, { status: 200 });
+    } else {
+      return NextResponse.json({ error: "El votante no existe" }, { status: 400 });
     }
   } catch (err) {
     console.log(err);

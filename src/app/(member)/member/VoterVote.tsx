@@ -22,11 +22,13 @@ export default function VoterVote() {
     };
 
     return (
-      <form action={handleSubmit} onChange={handleChange} className="flex flex-col justify-center items-center h-full gap-3">
-        <Label className={cn("mb-3 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Votante</Label>
-        <Input type="text" id="nationalId" name="nationalId" className={cn(errors?.nationalId ? "ring ring-destructive" : "")} defaultValue={""} />
+      <form action={handleSubmit} onChange={handleChange} className="flex flex-col justify-center items-center h-full ">
+        <div className="">
+          <Label className={cn("inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Votante</Label>
+          <Input type="text" id="nationalId" name="nationalId" className={cn(errors?.nationalId ? "ring ring-destructive" : "")} defaultValue={""} />
+        </div>
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-0" />}
-        <Button>Buscar Votante por Cédula</Button>
+        <Button>Registrar Votante con Cédula</Button>
       </form>
     );
   }

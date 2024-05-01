@@ -15,35 +15,44 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
   const [qrOpen, setQrOpen] = useState(false);
   const [leader, setLeader] = useState<Leader | undefined>(undefined);
   const [modalType, setModalType] = useState<"qr" | "manual" | "">("");
-  const { errors, hasErrors, handleChange } = useValidatedForm<{ nationalId: string }>(nationalIdSchema);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { errors, handleChange } = useValidatedForm<{ nationalId: string }>(nationalIdSchema);
   const router = useRouter();
   const { nationalId } = props.params;
   useEffect(() => {
     async function getLeader() {
+      setIsLoading(true);
       const response = await fetch(`/api/leaders/${nationalId}`);
       const responseData = (await response.json()) as { success: true; leader: Leader };
       setLeader(responseData.leader);
+      setIsLoading(false);
     }
     getLeader();
   }, [nationalId]);
 
-  if (!leader) {
+  if (!leader || isLoading) {
     return <Loading />;
   }
 
   const handleQRScan = async (data: string) => {
     try {
       setQrOpen(false);
+
       const nationalId = data.split("|")[0];
+
       const response = await fetch(`/api/voters/${nationalId}`, {
         method: "POST",
         body: JSON.stringify({ leaderId: leader.id }),
       });
       const responseData = (await response.json()) as { error: string } | { success: true; voter: Voter };
+
       if (response.status === 400) {
         const error = responseData as { error: string };
         console.log("error", error);
         toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+        setError(error.error);
+        router.push("/member");
       } else {
         toast.success("Votante Registrado!");
       }
@@ -51,32 +60,39 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
       const error = e as { error: string };
       console.log("error", error);
       toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+      router.push("/member");
     }
-
-    router.push("/member");
   };
+
   const handleSubmit = async (data: FormData) => {
     try {
+      setIsLoading(true);
+
       const nationalId = data.get("nationalId");
+
       const response = await fetch(`/api/voters/${nationalId}`, {
         method: "POST",
-        body: JSON.stringify({ leaderId: leader.nationalId }),
+        body: JSON.stringify({ leaderId: leader.id }),
       });
       const responseData = (await response.json()) as { error: string } | { success: true; voter: Voter };
+
       if (response.status === 400) {
         const error = responseData as { error: string };
-        console.log("error", error);
         toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+        router.push("/member");
       } else {
         toast.success("Votante Registrado!");
+        const { voter } = responseData as { success: true; voter: Voter };
+        router.push(`/voter/${voter.nationalId}`);
       }
     } catch (e) {
       const error = e as { error: string };
       console.log("error", error);
       toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+      router.push("/member");
     }
 
-    router.push("/member");
+    setIsLoading(false);
   };
 
   return (
@@ -88,6 +104,12 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
         <span className="italic">Cédula: {leader?.nationalId}</span>
       </div>
 
+      {error && (
+        <div className="bg-red-500 p-4 w-1/2">
+          <h3 className="font-bold">Error!</h3>
+          <span>{error}</span>
+        </div>
+      )}
       <div className="flex flex-col gap-3">
         <h2 className="text-center">Ingresar Votante</h2>
         {qrOpen && <QRScanner components={{ tracker: qrOpen }} onResult={handleQRScan} />}
