@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import { createVoter, deleteVoter, updateVoter } from "@/lib/api/voters/mutations";
 import { voterIdSchema, insertVoterParams, updateVoterParams } from "@/lib/db/schema/voters";
-import { CheerioCrawler, Dataset, RequestQueue } from "crawlee";
 
 export async function POST(req: Request) {
   try {
