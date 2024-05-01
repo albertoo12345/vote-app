@@ -9,6 +9,7 @@ import { cn, nationalIdSchema } from "@/lib/utils";
 import { Leader, Voter } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function LeaderVotePage(props: { params: { nationalId: string } }) {
   const [qrOpen, setQrOpen] = useState(false);
@@ -31,23 +32,51 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
   }
 
   const handleQRScan = async (data: string) => {
-    setQrOpen(false);
-    const nationalId = data.split("|")[0];
-    const response = await fetch(`/api/voters/${nationalId}`, {
-      method: "POST",
-      body: JSON.stringify({ leaderId: leader.id }),
-    });
-    const responseData = (await response.json()) as { success: true; voter: Voter };
-    console.log(responseData);
+    try {
+      setQrOpen(false);
+      const nationalId = data.split("|")[0];
+      const response = await fetch(`/api/voters/${nationalId}`, {
+        method: "POST",
+        body: JSON.stringify({ leaderId: leader.id }),
+      });
+      const responseData = (await response.json()) as { error: string } | { success: true; voter: Voter };
+      if (response.status === 400) {
+        const error = responseData as { error: string };
+        console.log("error", error);
+        toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+      } else {
+        toast.success("Votante Registrado!");
+      }
+    } catch (e) {
+      const error = e as { error: string };
+      console.log("error", error);
+      toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+    }
+
+    router.push("/member");
   };
   const handleSubmit = async (data: FormData) => {
-    const nationalId = data.get("nationalId");
-    const response = await fetch(`/api/voters/${nationalId}`, {
-      method: "POST",
-      body: JSON.stringify({ leaderId: leader.nationalId }),
-    });
-    const responseData = (await response.json()) as { success: true; voter: Voter };
-    console.log(responseData);
+    try {
+      const nationalId = data.get("nationalId");
+      const response = await fetch(`/api/voters/${nationalId}`, {
+        method: "POST",
+        body: JSON.stringify({ leaderId: leader.nationalId }),
+      });
+      const responseData = (await response.json()) as { error: string } | { success: true; voter: Voter };
+      if (response.status === 400) {
+        const error = responseData as { error: string };
+        console.log("error", error);
+        toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+      } else {
+        toast.success("Votante Registrado!");
+      }
+    } catch (e) {
+      const error = e as { error: string };
+      console.log("error", error);
+      toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
+    }
+
+    router.push("/member");
   };
 
   return (

@@ -1,3 +1,4 @@
+import { getLeaderById, getLeaders } from "@/lib/api/leaders/queries";
 import { createVoter } from "@/lib/api/voters/mutations";
 import { getVoterById, getVoterByNationalId } from "@/lib/api/voters/queries";
 import { NewVoterParams } from "@/lib/db/schema/voters";
@@ -8,10 +9,22 @@ import { z } from "zod";
 export async function POST(req: Request, context: { params: { nationalId: string } }) {
   try {
     const { nationalId } = context.params;
-    const { leaderId } = (await req.json()) as { leaderId: string };
+    let { leaderId } = (await req.json()) as { leaderId: string };
 
     if (!nationalId) {
       return NextResponse.json({ error: "Cédula Invalida" }, { status: 400 });
+    }
+
+    if (leaderId === "noExist") {
+      const { leaders } = await getLeaders();
+      const noExistLeader = leaders.filter((leader) => leader.name === "noExist");
+      console.log(noExistLeader);
+
+      leaderId = noExistLeader[0].id;
+    }
+    const { leader } = await getLeaderById(leaderId);
+    if (!leader && leaderId !== "noExist") {
+      return NextResponse.json({ error: "Lider no existe" }, { status: 400 });
     }
 
     const { voter: dbVoter } = await getVoterByNationalId(nationalId);

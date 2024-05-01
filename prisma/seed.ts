@@ -17,6 +17,14 @@ function findRandomLeader(leaders: Leader[]): Leader {
 async function main() {
   const leaders: Leader[] = [];
   // Leaders
+  await prisma.leader.create({
+    data: {
+      name: "noExist",
+      lastName: "noExist",
+      email: "noExist@noexist.com",
+      nationalId: "noExist",
+    },
+  });
   for (let i = 0; i < 15; i++) {
     const leader = await prisma.leader.create({
       data: {
