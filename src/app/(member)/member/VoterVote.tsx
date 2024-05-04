@@ -48,7 +48,7 @@ export default function VoterVote() {
           setModalType("qr");
           setQrOpen(true);
         }}
-        className="text-lg text-wrap"
+        className="text-wrap"
       >
         Buscar por Código QR
       </Button>
@@ -57,7 +57,7 @@ export default function VoterVote() {
           setModalType("manual");
           setQrOpen(false);
         }}
-        className="text-lg text-wrap"
+        className="text-wrap"
       >
         Ingresar Cédula manualmente
       </Button>

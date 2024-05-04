@@ -99,7 +99,7 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
     <div className="flex flex-col justify-center items-center h-full gap-5">
       <div className="text-center">
         <h1 className="text-xl font-bold">
-          Dirigente: {leader.name} {leader.lastName}
+          Activista: {leader.name} {leader.lastName}
         </h1>
         <span className="italic">Cédula: {leader?.nationalId}</span>
       </div>

@@ -17,9 +17,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <main>
       <ClerkProvider>
         <TrpcProvider cookies={cookies().toString()}>
-          <div className="flex h-screen">
-            {/* <UserDetails session={session} /> */}
-            <main className="flex-1 md:p-8 pt-2 p-8 overflow-y-auto">{children}</main>
+          <div className="h-screen relative">
+            <div className="flex h-full">
+              <main className="flex-1 md:p-8 pt-2 p-8 overflow-y-auto">{children}</main>
+            </div>
+            <div className="absolute bottom-2 w-full">
+              <div className="w-fit mx-auto">
+                <UserDetails session={session} />
+              </div>
+            </div>
           </div>
         </TrpcProvider>
       </ClerkProvider>

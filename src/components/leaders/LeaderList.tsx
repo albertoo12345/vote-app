@@ -28,7 +28,7 @@ export default function LeaderList({ leaders }: { leaders: CompleteLeader[] }) {
 
   return (
     <div>
-      <Modal open={open} setOpen={setOpen} title={activeLeader ? "Editar Dirigente" : "Crear Dirigente"}>
+      <Modal open={open} setOpen={setOpen} title={activeLeader ? "Editar Activista" : "Crear Activista"}>
         <LeaderForm leader={activeLeader} addOptimistic={addOptimisticLeader} openModal={openModal} closeModal={closeModal} />
       </Modal>
       <div className="absolute right-0 top-0 ">
@@ -63,11 +63,11 @@ const Leader = ({ leader, openModal }: { leader: CompleteLeader; openModal: TOpe
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No hay dirigentes</h3>
-      <p className="mt-1 text-sm text-muted-foreground">Crea un nuevo dirigente aqui.</p>
+      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No hay activistas</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Crea un nuevo activista aqui.</p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> Nuevo Dirigente{" "}
+          <PlusIcon className="h-4" /> Nuevo Activista{" "}
         </Button>
       </div>
     </div>

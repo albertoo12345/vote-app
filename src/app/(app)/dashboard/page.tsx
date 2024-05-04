@@ -41,7 +41,7 @@ export default async function DashboardPage() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Dirigentes</CardTitle>
+                <CardTitle className="text-sm font-medium">Activistas</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -65,8 +65,8 @@ export default async function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
             <Card className="col-span-3">
               <CardHeader>
-                <CardTitle>Votos por Dirigente</CardTitle>
-                <CardDescription>Votos registrados por cada dirigente.</CardDescription>
+                <CardTitle>Votos por Activista</CardTitle>
+                <CardDescription>Votos registrados por cada activista.</CardDescription>
               </CardHeader>
               <CardContent>
                 {voters.length ? <RecentVotes /> : <div className="text-center text-muted-foreground">No hay votos registrados</div>}

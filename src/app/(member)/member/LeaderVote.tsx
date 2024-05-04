@@ -32,7 +32,7 @@ export default function LeaderVote() {
 
     return (
       <form action={handleSubmit} onChange={handleChange} className="flex flex-col justify-center items-center h-full gap-3">
-        <Label className={cn("mb-3 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Dirigente</Label>
+        <Label className={cn("mb-3 inline-block", errors?.nationalId ? "text-destructive" : "")}>Cedula del Activista</Label>
         <Input
           type="text"
           id="nationalId"
@@ -46,7 +46,7 @@ export default function LeaderVote() {
         {!isLoading ? (
           <>
             <Button type="submit" disabled={isLoading}>
-              Registrar Dirigente por Cédula
+              Registrar Activista por Cédula
             </Button>
             <Button
               disabled={isLoading}

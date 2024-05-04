@@ -11,7 +11,7 @@ export const defaultLinks: SidebarLink[] = [
   // { href: "/account", title: "Account", icon: Cog },
   {
     href: "/leaders",
-    title: "Dirigentes",
+    title: "Activistas",
     icon: Globe,
   },
   {

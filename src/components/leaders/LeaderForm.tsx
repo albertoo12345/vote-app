@@ -206,7 +206,7 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
   const isUpdating = pending && editing === true;
   return (
     <Button type="submit" className="mr-2" disabled={isCreating || isUpdating || errors} aria-disabled={isCreating || isUpdating || errors}>
-      {editing ? `${isUpdating ? "Actualizando Dirigente" : "Actualizar Dirigente"}` : `${isCreating ? "Creando Dirigente" : "Crear Dirigente"}`}
+      {editing ? `${isUpdating ? "Actualizando Activista" : "Actualizar Activista"}` : `${isCreating ? "Creando Activista" : "Crear Activista"}`}
     </Button>
   );
 };

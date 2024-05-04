@@ -184,10 +184,10 @@ const VoterForm = ({
 
       {leaderId ? null : (
         <div>
-          <Label className={cn("mb-2 inline-block", errors?.leaderId ? "text-destructive" : "")}>Dirigente Asignado</Label>
+          <Label className={cn("mb-2 inline-block", errors?.leaderId ? "text-destructive" : "")}>Activista Asignado</Label>
           <Select defaultValue={voter?.leaderId} name="leaderId">
             <SelectTrigger className={cn(errors?.leaderId ? "ring ring-destructive" : "")}>
-              <SelectValue placeholder="Selecciona un Dirigente" />
+              <SelectValue placeholder="Selecciona un Activista" />
             </SelectTrigger>
             <SelectContent>
               {leaders?.map((leader) => (

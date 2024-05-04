@@ -76,7 +76,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Dirigente
+          Activista
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -152,7 +152,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
 const translations = {
   name: "Votante",
   nationalId: "Cedula",
-  leader: "Dirigente",
+  leader: "Activista",
   township: "Lugar de Votacion",
   desk: "Mesa",
   createdAt: "Fecha de Ingreso",

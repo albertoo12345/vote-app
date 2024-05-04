@@ -11,7 +11,7 @@ export default async function LeadersPage() {
     <main>
       <div className="relative">
         <div className="flex justify-between">
-          <h1 className="font-semibold text-2xl my-2">Dirigentes</h1>
+          <h1 className="font-semibold text-2xl my-2">Activistas</h1>
         </div>
         <Leaders />
       </div>
