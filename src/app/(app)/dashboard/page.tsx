@@ -31,17 +31,6 @@ export default async function DashboardPage() {
             <h2 className="text-3xl font-bold tracking-tight">Estadísticas</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Votos por Dirigente</CardTitle>
-                <CardDescription>Votos registrados por cada dirigente.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {voters.length ? <RecentVotes /> : <div className="text-center text-muted-foreground">No hay votos registrados</div>}
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Votos</CardTitle>
@@ -70,6 +59,17 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{leaders.length}</div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Votos por Dirigente</CardTitle>
+                <CardDescription>Votos registrados por cada dirigente.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {voters.length ? <RecentVotes /> : <div className="text-center text-muted-foreground">No hay votos registrados</div>}
               </CardContent>
             </Card>
           </div>
