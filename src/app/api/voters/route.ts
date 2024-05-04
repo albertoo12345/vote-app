@@ -2,21 +2,15 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import {
-  createVoter,
-  deleteVoter,
-  updateVoter,
-} from "@/lib/api/voters/mutations";
-import { 
-  voterIdSchema,
-  insertVoterParams,
-  updateVoterParams 
-} from "@/lib/db/schema/voters";
+import { createVoter, deleteVoter, updateVoter } from "@/lib/api/voters/mutations";
+import { voterIdSchema, insertVoterParams, updateVoterParams } from "@/lib/db/schema/voters";
 
 export async function POST(req: Request) {
   try {
     const validatedData = insertVoterParams.parse(await req.json());
     const { success } = await createVoter(validatedData);
+
+    console.log(req);
 
     revalidatePath("/voters"); // optional - assumes you will have named route same as entity
 
@@ -29,7 +23,6 @@ export async function POST(req: Request) {
     }
   }
 }
-
 
 export async function PUT(req: Request) {
   try {

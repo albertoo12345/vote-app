@@ -33,6 +33,14 @@ export const getUserAuth = async () => {
 };
 
 export const checkAuth = async () => {
-  const { userId } = auth();
+  const { userId, sessionId } = auth();
   if (!userId) redirect("/sign-in");
+  const session = await clerkClient.sessions.getSession(sessionId);
+  const memberships = await clerkClient.users.getOrganizationMembershipList({ userId });
+  const role = memberships[0].role;
+  return {
+    userId,
+    session,
+    role,
+  };
 };
