@@ -102,7 +102,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-left font-medium">
-          {row.original.township}, {row.original.school}, {row.original.desk}
+          {row.original.township}, {row.original.school}, Mesa: {row.original.desk}
         </div>
       );
     },
