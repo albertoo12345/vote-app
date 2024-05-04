@@ -25,38 +25,41 @@ async function main() {
       nationalId: "noExist",
     },
   });
-  for (let i = 0; i < 15; i++) {
-    const leader = await prisma.leader.create({
-      data: {
-        name: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        email: faker.internet.email(),
-        nationalId: generateRandomNumber(),
-      },
-    });
-    leaders.push(leader);
-  }
 
-  const randVotersLength = Math.floor(Math.random() * 3500);
-  console.log(`Creating ${randVotersLength} voters`);
+  if (process.env.NODE_ENV !== "production") {
+    for (let i = 0; i < 15; i++) {
+      const leader = await prisma.leader.create({
+        data: {
+          name: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          email: faker.internet.email(),
+          nationalId: generateRandomNumber(),
+        },
+      });
+      leaders.push(leader);
+    }
 
-  // Voters
-  for (let i = 0; i < randVotersLength; i++) {
-    await prisma.voter.create({
-      data: {
-        name: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        nationalId: generateRandomNumber(),
-        desk: faker.number.int({ min: 12, max: 97 }).toString(),
-        school: faker.company.name(),
-        township: faker.location.city(),
-        leader: {
-          connect: {
-            id: findRandomLeader(leaders).id,
+    const randVotersLength = Math.floor(Math.random() * 3500);
+    console.log(`Creating ${randVotersLength} voters`);
+
+    // Voters
+    for (let i = 0; i < randVotersLength; i++) {
+      await prisma.voter.create({
+        data: {
+          name: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          nationalId: generateRandomNumber(),
+          desk: faker.number.int({ min: 12, max: 97 }).toString(),
+          school: faker.company.name(),
+          township: faker.location.city(),
+          leader: {
+            connect: {
+              id: findRandomLeader(leaders).id,
+            },
           },
         },
-      },
-    });
+      });
+    }
   }
 }
 
