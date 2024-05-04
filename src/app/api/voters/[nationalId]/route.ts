@@ -15,7 +15,7 @@ export async function POST(req: Request, context: { params: { nationalId: string
 
     let { leaderId } = (await req.json()) as { leaderId: string };
     if (leaderId === "noExist") {
-      const { leaders } = await getLeaders();
+      const { leaders } = await getLeaders(true);
       const noExistLeader = leaders.filter((leader) => leader.name === "noExist");
 
       leaderId = noExistLeader[0].id;

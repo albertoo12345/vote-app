@@ -1,14 +1,19 @@
 import { db } from "@/lib/db/index";
 import { type LeaderId, leaderIdSchema } from "@/lib/db/schema/leaders";
 
-export const getLeaders = async () => {
-  const l = await db.leader.findMany({
-    where: {
-      nationalId: {
-        not: "noExist",
+export const getLeaders = async (noExistIncluded = false) => {
+  let l;
+  if (noExistIncluded) {
+    l = await db.leader.findMany({});
+  } else {
+    l = await db.leader.findMany({
+      where: {
+        nationalId: {
+          not: "noExist",
+        },
       },
-    },
-  });
+    });
+  }
   return { leaders: l };
 };
 

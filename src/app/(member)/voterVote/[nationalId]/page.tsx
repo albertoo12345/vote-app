@@ -46,7 +46,7 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
       }
     }
     createVoter();
-  }, [nationalId]);
+  }, [nationalId, router]);
 
   if (!voter && !error) {
     return <Loading />;

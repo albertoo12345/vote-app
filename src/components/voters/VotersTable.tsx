@@ -30,6 +30,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Leader, Voter } from "@prisma/client";
+import { format } from "date-fns";
+import { es } from "date-fns/locale/es";
 
 const columnHelper = createColumnHelper<Voter & { leader: Leader }>();
 
@@ -82,7 +84,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-left  font-medium">
-          {row.original.leader.name} {row.original.leader.lastName}
+          {row.original.leader.name.toLowerCase() === "noexist" ? "Voto Suelto" : row.original.leader.name + " " + row.original.leader.lastName}
         </div>
       );
     },
@@ -107,7 +109,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
   },
   {
     accessorKey: "createdAt",
-    enableHiding: true,
+
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -117,7 +119,7 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="text-left font-medium">{row.original.createdAt.toISOString()}</div>;
+      return <div className="text-left font-medium">{format(row.original.createdAt, "Pp", { locale: es })}</div>;
     },
   },
   // {
@@ -153,10 +155,11 @@ const translations = {
   leader: "Dirigente",
   township: "Lugar de Votacion",
   desk: "Mesa",
+  createdAt: "Fecha de Ingreso",
 };
 
 export default function VotersTable(props: { voters: (Voter & { leader: Leader })[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([{ desc: false, id: "createdAt" }]);
+  const [sorting, setSorting] = React.useState<SortingState>([{ desc: true, id: "createdAt" }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
