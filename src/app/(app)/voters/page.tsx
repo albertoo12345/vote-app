@@ -8,20 +8,20 @@ import VotersTable from "@/components/voters/VotersTable";
 
 export const revalidate = 0;
 
-export default async function VotersPage() {
+export default async function VotersPage(props: { searchParams: { leaderId?: string } }) {
   return (
     <main>
       <div className="relative">
         <div className="flex justify-between">
           <h1 className="font-semibold text-2xl my-2">Votantes</h1>
         </div>
-        <Voters />
+        <Voters leaderId={props.searchParams.leaderId} />
       </div>
     </main>
   );
 }
 
-const Voters = async () => {
+const Voters = async (props: { leaderId?: string }) => {
   const { voters } = await getVoters();
   const { leaders } = await getLeaders();
   return (

@@ -10,11 +10,7 @@ import Loading from "@/app/loading";
 
 export const revalidate = 0;
 
-export default async function LeaderPage({
-  params,
-}: {
-  params: { leaderId: string };
-}) {
+export default async function LeaderPage({ params }: { params: { leaderId: string } }) {
   return (
     <main className="overflow-auto">
       <Leader id={params.leaderId} />
@@ -30,11 +26,11 @@ const Leader = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="leaders" />
-        <OptimisticLeader leader={leader} />
+        {/* <OptimisticLeader leader={leader} /> */}
       </div>
       <div className="relative mt-8 mx-4">
         <h3 className="text-xl font-medium mb-4">
-          {leader.name}&apos;s Voters
+          Votos de {leader.name} ({voters.length} votos)
         </h3>
         <VoterList leaders={[]} leaderId={leader.id} voters={voters} />
       </div>

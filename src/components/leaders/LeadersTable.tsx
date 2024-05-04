@@ -30,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Leader } from "@prisma/client";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<Leader>();
 
@@ -46,14 +47,16 @@ export const columns: ColumnDef<Leader>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Votante
+          Activista
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.getValue("name")} {row.original.lastName}
+        <Link href={"/leaders/" + row.original.id}>
+          {row.getValue("name")} {row.original.lastName}
+        </Link>
       </div>
     ),
   },

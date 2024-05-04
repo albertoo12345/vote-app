@@ -100,9 +100,24 @@ export const columns: ColumnDef<Voter & { leader: Leader }>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-left font-medium">
-          {row.original.township}, {row.original.school}
+          {row.original.township}, {row.original.school}, {row.original.desk}
         </div>
       );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    enableHiding: true,
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Fecha de Ingreso
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <div className="text-left font-medium">{row.original.createdAt.toISOString()}</div>;
     },
   },
   // {
@@ -141,7 +156,7 @@ const translations = {
 };
 
 export default function VotersTable(props: { voters: (Voter & { leader: Leader })[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([{ desc: false, id: "createdAt" }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
