@@ -1,5 +1,6 @@
 "use client";
 import Loading from "@/app/loading";
+import VoterForm from "@/components/voters/VoterForm";
 import { Voter } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
   const { nationalId } = props.params;
   const [error, setError] = useState("");
   const router = useRouter();
+  const [loadVoteForm, setLoadVoteForm] = useState(false);
   useEffect(() => {
     async function createVoter() {
       try {
@@ -26,10 +28,15 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
           setError("No se pudo Registrar al Votante. Razon: " + error.error);
           setVoter({ id: "noVoter" } as Voter);
 
+          if (error.error === "notFoundIn3rdApp") {
+            toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+            setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+            setLoadVoteForm(true);
+            return;
+          }
           setTimeout(() => {
             router.push("/member");
           }, 4000);
-
           toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
         } else {
           toast.success("Votante Registrado!");
@@ -41,6 +48,12 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
         const error = e as { error: string };
         setError("No se pudo Registrar al Votante. Razon: " + error.error);
         setVoter({ id: "noVoter" } as Voter);
+        if (error.error === "notFoundIn3rdApp") {
+          toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+          setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+          setLoadVoteForm(true);
+          return;
+        }
         setTimeout(() => {
           router.push("/member");
         }, 4000);
@@ -51,6 +64,18 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
 
   if (!voter && !error) {
     return <Loading />;
+  }
+
+  if (loadVoteForm) {
+    return (
+      <>
+        <div className="bg-red-500 p-4 w-1/2">
+          <h3 className="font-bold">Error!</h3>
+          <span>{error}</span>
+        </div>
+        <VoterForm leaders={[]} voterVote withoutQR />
+      </>
+    );
   }
 
   if (error) {

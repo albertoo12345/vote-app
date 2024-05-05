@@ -35,14 +35,20 @@ export const crawlPanamanianData = (data: string) => {
 export const getPanamanianData = async (nationalId: string) => {
   const formdata = new FormData();
   formdata.append("cedula", nationalId);
-  const res = await fetch("https://verificate.votopanama.net/search.php", {
-    method: "POST",
-    body: formdata,
-    redirect: "follow",
-  });
+  try {
+    const res = await fetch("https://verificate.votopanama.net/search.php", {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
+    });
 
-  const data = await res.text();
-  return crawlPanamanianData(data);
+    const data = await res.text();
+    return crawlPanamanianData(data);
+  } catch (error) {
+    console.log("error", error);
+
+    throw new Error("notFoundIn3rdApp");
+  }
 };
 
 export const nationalIdSchema = z.object({

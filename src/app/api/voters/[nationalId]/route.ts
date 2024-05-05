@@ -51,7 +51,9 @@ export async function POST(req: Request, context: { params: { nationalId: string
       return NextResponse.json({ error: "El votante ya existe" }, { status: 400 });
     }
   } catch (err) {
-    console.log(err);
+    if ((err as { message: string }).message === "notFoundIn3rdApp") {
+      return NextResponse.json({ error: "notFoundIn3rdApp" }, { status: 400 });
+    }
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Error al llenar los campos", zodErrors: err.issues }, { status: 400 });
     } else {

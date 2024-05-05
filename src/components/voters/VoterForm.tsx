@@ -29,6 +29,8 @@ const VoterForm = ({
   closeModal,
   addOptimistic,
   postSuccess,
+  voterVote,
+  withoutQR,
 }: {
   voter?: Voter | null;
   leaders: Leader[];
@@ -37,6 +39,8 @@ const VoterForm = ({
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
+  voterVote?: boolean;
+  withoutQR?: boolean;
 }) => {
   const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Voter>(insertVoterParams);
   const editing = !!voter?.id;
@@ -59,6 +63,11 @@ const VoterForm = ({
         description: data?.error ?? "Error",
       });
     } else {
+      if (voterVote) {
+        postSuccess && postSuccess();
+        toast.success(`Voter ${action}d!`);
+        router.push(`/voter/${data?.values.nationalId}`);
+      }
       router.refresh();
       postSuccess && postSuccess();
       toast.success(`Voter ${action}d!`);
@@ -70,7 +79,16 @@ const VoterForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const voterParsed = await insertVoterParams.safeParseAsync({ leaderId, ...payload });
+    const voterParsed = await insertVoterParams
+      .extend({
+        name: z.string().min(1, "El nombre es requerido"),
+        lastName: z.string().min(1, "El apellido es requerido"),
+        nationalId: z.string().min(1, "La cédula es requerida"),
+        school: z.string().min(1, "La escuela es requerida"),
+        township: z.string().min(1, "El corregimiento es requerido"),
+        desk: z.string().min(1, "El Nº de mesa es requerida"),
+      })
+      .safeParseAsync({ leaderId: voterVote ? "noExist" : leaderId, ...payload });
 
     if (!voterParsed.success) {
       setErrors(voterParsed?.error.flatten().fieldErrors);
@@ -99,7 +117,15 @@ const VoterForm = ({
           error: error ?? "Error",
           values: pendingVoter,
         };
-        onSuccess(editing ? "update" : "create", error ? errorFormatted : undefined);
+        onSuccess(
+          editing ? "update" : "create",
+          error
+            ? errorFormatted
+            : {
+                error: "",
+                values: pendingVoter,
+              }
+        );
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -128,10 +154,15 @@ const VoterForm = ({
 
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
-      <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
-        Rellena con QR
-      </Button>
-      {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
+      {!withoutQR && (
+        <>
+          <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
+            Rellena con QR
+          </Button>
+          {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
+        </>
+      )}
+      <h3 className="my-3 text-2xl font-bold">Ingresa el voto manualmente</h3>
       {/* Schema fields start */}
       <div>
         <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Nombre del Votante</Label>
@@ -182,7 +213,7 @@ const VoterForm = ({
         {errors?.desk ? <p className="text-xs text-destructive mt-2">{errors.desk[0]}</p> : <div className="h-6" />}
       </div>
 
-      {leaderId ? null : (
+      {leaderId || voterVote ? null : (
         <div>
           <Label className={cn("mb-2 inline-block", errors?.leaderId ? "text-destructive" : "")}>Activista Asignado</Label>
           <Select defaultValue={voter?.leaderId} name="leaderId">
@@ -224,7 +255,15 @@ const VoterForm = ({
                 values: voter,
               };
 
-              onSuccess("delete", error ? errorFormatted : undefined);
+              onSuccess(
+                "delete",
+                error
+                  ? errorFormatted
+                  : {
+                      error: "",
+                      values: voter,
+                    }
+              );
             });
           }}
         >

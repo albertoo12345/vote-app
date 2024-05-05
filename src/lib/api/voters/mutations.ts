@@ -1,9 +1,15 @@
 import { db } from "@/lib/db/index";
 import { VoterId, NewVoterParams, UpdateVoterParams, updateVoterSchema, insertVoterSchema, voterIdSchema } from "@/lib/db/schema/voters";
+import { getLeaders } from "../leaders/queries";
 
 export const createVoter = async (voter: NewVoterParams) => {
   const newVoter = insertVoterSchema.parse(voter);
   try {
+    const leaders = await getLeaders(true);
+    const noExistLeader = leaders.leaders.filter((leader) => leader.name === "noExist");
+    if (newVoter.leaderId === "noExist") {
+      newVoter.leaderId = noExistLeader[0].id;
+    }
     const v = await db.voter.create({ data: newVoter });
     return { voter: v, success: true };
   } catch (err) {
