@@ -33,8 +33,9 @@ export default function VoterVote(props: { params: { nationalId: string } }) {
           toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
         } else {
           toast.success("Votante Registrado!");
+          const voter = (responseData as { success: true; voter: Voter }).voter;
           setVoter((responseData as { success: true; voter: Voter }).voter);
-          router.push("/member");
+          router.push(`/voter/${voter.nationalId}`);
         }
       } catch (e) {
         const error = e as { error: string };
