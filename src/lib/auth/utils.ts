@@ -37,7 +37,12 @@ export const checkAuth = async () => {
   if (!userId) redirect("/sign-in");
   const session = await clerkClient.sessions.getSession(sessionId);
   const memberships = await clerkClient.users.getOrganizationMembershipList({ userId });
-  const role = memberships[0].role;
+  let role;
+  if (memberships.length > 0) {
+    role = memberships[0].role;
+  } else {
+    role = "member";
+  }
   return {
     userId,
     session,
