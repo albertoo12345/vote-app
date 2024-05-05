@@ -88,7 +88,7 @@ const VoterForm = ({
         township: z.string().min(1, "El corregimiento es requerido"),
         desk: z.string().min(1, "El Nº de mesa es requerida"),
       })
-      .safeParseAsync({ leaderId: voterVote ? "noExist" : leaderId, ...payload });
+      .safeParseAsync({ leaderId: voterVote ? leaderId ?? "noExist" : leaderId, ...payload });
 
     if (!voterParsed.success) {
       setErrors(voterParsed?.error.flatten().fieldErrors);

@@ -119,7 +119,16 @@ export default function LeaderVote() {
       });
 
       const responseData = (await response.json()) as { success: true; leader: Leader };
-
+      if (response.status === 400) {
+        const error = responseData as unknown as { error: string };
+        setError("No se pudo Registrar al Votante. Razon: " + error.error);
+        if (error.error === "notFoundIn3rdApp") {
+          toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+          setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+          setLoadVoteForm(true);
+          return;
+        }
+      }
       setIsLoading(false);
       router.push(`/leaderVote/${responseData.leader.nationalId}`);
     } catch (e) {
@@ -137,11 +146,12 @@ export default function LeaderVote() {
   if (loadVoteForm) {
     return (
       <>
-        <div className="bg-red-500 p-4 w-1/2">
+        <div className="bg-red-500 p-4 w-full">
           <h3 className="font-bold">Error!</h3>
           <span>{error}</span>
         </div>
-        <LeaderForm withoutQR />
+        <h1 className="my-3 font-bold text-3xl">Ingresar Activista</h1>
+        <LeaderForm withoutQR leaderVote />
       </>
     );
   }

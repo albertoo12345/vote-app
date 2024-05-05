@@ -4,6 +4,7 @@ import QRScanner from "@/components/qrScanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import VoterForm from "@/components/voters/VoterForm";
 import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 import { cn, nationalIdSchema } from "@/lib/utils";
 import { Leader, Voter } from "@prisma/client";
@@ -16,6 +17,7 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
   const [leader, setLeader] = useState<Leader | undefined>(undefined);
   const [modalType, setModalType] = useState<"qr" | "manual" | "">("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadVoteForm, setLoadVoteForm] = useState(false);
   const [error, setError] = useState("");
   const { errors, handleChange } = useValidatedForm<{ nationalId: string }>(nationalIdSchema);
   const router = useRouter();
@@ -49,8 +51,18 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
 
       if (response.status === 400) {
         const error = responseData as { error: string };
+
+        if (error.error === "notFoundIn3rdApp") {
+          toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+          setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+          setLoadVoteForm(true);
+          return;
+        }
         toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
-        router.push("/member");
+        setTimeout(() => {
+          router.push("/member");
+        }, 4000);
+        toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
       } else {
         toast.success("Votante Registrado!");
         const { voter } = responseData as { success: true; voter: Voter };
@@ -58,9 +70,16 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
       }
     } catch (e) {
       const error = e as { error: string };
-      console.log("error", error);
-      toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
-      router.push("/member");
+      setError("No se pudo Registrar al Votante. Razon: " + error.error);
+      if (error.error === "notFoundIn3rdApp") {
+        toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+        setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+        setLoadVoteForm(true);
+        return;
+      }
+      setTimeout(() => {
+        router.push("/member");
+      }, 4000);
     }
 
     setIsLoading(false);
@@ -68,7 +87,7 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
 
   const handleSubmit = async (data: FormData) => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       const nationalId = data.get("nationalId");
 
@@ -80,8 +99,20 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
 
       if (response.status === 400) {
         const error = responseData as { error: string };
+        console.log("error", error);
+
+        setError("No se pudo Registrar al Votante. Razon: " + error.error);
+
+        if (error.error === "notFoundIn3rdApp") {
+          toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+          setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+          setLoadVoteForm(true);
+          return;
+        }
+        setTimeout(() => {
+          router.push("/member");
+        }, 4000);
         toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
-        router.push("/member");
       } else {
         toast.success("Votante Registrado!");
         const { voter } = responseData as { success: true; voter: Voter };
@@ -89,13 +120,32 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
       }
     } catch (e) {
       const error = e as { error: string };
-      console.log("error", error);
-      toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
-      router.push("/member");
+      setError("No se pudo Registrar al Votante. Razon: " + error.error);
+      if (error.error === "notFoundIn3rdApp") {
+        toast.error("No se pudo encontrar al votante en el sistema de votopanama.net");
+        setError("Ha ocurrido un error al registrar al votante. Por favor ingresa los datos manualmentew.");
+        setLoadVoteForm(true);
+        return;
+      }
+      setTimeout(() => {
+        router.push("/member");
+      }, 4000);
     }
 
     setIsLoading(false);
   };
+
+  if (loadVoteForm) {
+    return (
+      <>
+        <div className="bg-red-500 p-4 w-1/2">
+          <h3 className="font-bold">Error!</h3>
+          <span>{error}</span>
+        </div>
+        <VoterForm leaders={[leader]} leaderId={leader.id} voterVote withoutQR />
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center items-center h-full gap-5">

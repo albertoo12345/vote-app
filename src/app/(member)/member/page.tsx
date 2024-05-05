@@ -38,7 +38,7 @@ export default function HomePage() {
       </Modal>
       <div className="flex flex-col justify-center items-center h-full gap-7">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Vielka Cortés</h1>
+          <h1 className="text-4xl font-bold">Vielka Cortés Ovalle</h1>
           <span className="italic">Registro de Votos</span>
         </div>
         <Button onClick={() => openModal("leader")} className="h-fit text-wrap">
