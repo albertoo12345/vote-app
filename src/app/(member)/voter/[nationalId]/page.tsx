@@ -55,12 +55,14 @@ export default function VoterDetailsPage(props: { params: { nationalId: string }
           <b>Mesa: </b>
           <span>{voter.desk}</span>
         </li>
-        <li className="mt-3">
-          <b>Activista: </b>
-          <span>
-            {leader.name} {leader.lastName} - {leader.nationalId}
-          </span>
-        </li>
+        {leader.name.toLowerCase() !== "noexist" && (
+          <li className="mt-3">
+            <b>Activista: </b>
+            <span>
+              {leader.name} {leader.lastName} - {leader.nationalId}
+            </span>
+          </li>
+        )}
       </ul>
       <Button>
         <Link href="/member">Volver al Inicio</Link>
