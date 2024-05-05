@@ -24,6 +24,8 @@ const LeaderForm = ({
   closeModal,
   addOptimistic,
   postSuccess,
+  withoutQR,
+  leaderVote,
 }: {
   leader?: Leader | null;
 
@@ -31,6 +33,8 @@ const LeaderForm = ({
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
+  withoutQR?: boolean;
+  leaderVote?: boolean;
 }) => {
   const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Leader>(insertLeaderParams);
   const editing = !!leader?.id;
@@ -53,6 +57,11 @@ const LeaderForm = ({
         description: data?.error ?? "Error",
       });
     } else {
+      if (leaderVote) {
+        router.push(`/leaderVote/${data?.values.nationalId}`);
+        return;
+      }
+
       router.refresh();
       postSuccess && postSuccess();
       toast.success(`Leader ${action}d!`);
@@ -64,6 +73,7 @@ const LeaderForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
+    payload.email = payload.email || "";
     const leaderParsed = await insertLeaderParams.safeParseAsync({ ...payload });
     if (!leaderParsed.success) {
       setErrors(leaderParsed?.error.flatten().fieldErrors);
@@ -92,7 +102,15 @@ const LeaderForm = ({
           error: error ?? "Error",
           values: pendingLeader,
         };
-        onSuccess(editing ? "update" : "create", error ? errorFormatted : undefined);
+        onSuccess(
+          editing ? "update" : "create",
+          error
+            ? errorFormatted
+            : {
+                error: "",
+                values: pendingLeader,
+              }
+        );
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -121,10 +139,14 @@ const LeaderForm = ({
   };
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
-      <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
-        Rellena con QR
-      </Button>
-      {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
+      {!withoutQR && (
+        <>
+          <Button type="button" variant={"outline"} onClick={() => setQrMode(true)}>
+            Rellena con QR
+          </Button>
+          {qrMode && <QRScanner components={{ tracker: qrMode }} onResult={handleQRScan} />}
+        </>
+      )}
       {/* Schema fields start */}
       <div>
         <Label className={cn("mb-2 inline-block", errors?.name ? "text-destructive" : "")}>Nombre</Label>
@@ -160,7 +182,7 @@ const LeaderForm = ({
         {errors?.nationalId ? <p className="text-xs text-destructive mt-2">{errors.nationalId[0]}</p> : <div className="h-6" />}
       </div>
       <div>
-        <Label className={cn("mb-2 inline-block", errors?.email ? "text-destructive" : "")}>Correo</Label>
+        <Label className={cn("mb-2 inline-block", errors?.email ? "text-destructive" : "")}>Correo (Opcional)</Label>
         <Input type="text" name="email" className={cn(errors?.email ? "ring ring-destructive" : "")} defaultValue={leader?.email ?? ""} />
         {errors?.email ? <p className="text-xs text-destructive mt-2">{errors.email[0]}</p> : <div className="h-6" />}
       </div>
@@ -187,7 +209,15 @@ const LeaderForm = ({
                 values: leader,
               };
 
-              onSuccess("delete", error ? errorFormatted : undefined);
+              onSuccess(
+                "delete",
+                error
+                  ? errorFormatted
+                  : {
+                      error: "",
+                      values: leader,
+                    }
+              );
             });
           }}
         >

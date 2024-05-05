@@ -4,6 +4,10 @@ import { LeaderId, NewLeaderParams, UpdateLeaderParams, updateLeaderSchema, inse
 export const createLeader = async (leader: NewLeaderParams) => {
   const newLeader = insertLeaderSchema.parse(leader);
   try {
+    const existLeader = await db.leader.findFirst({ where: { nationalId: newLeader.nationalId } });
+    if (existLeader) {
+      return { leader: existLeader, success: true };
+    }
     const l = await db.leader.create({ data: newLeader });
     return { leader: l, success: true };
   } catch (err) {

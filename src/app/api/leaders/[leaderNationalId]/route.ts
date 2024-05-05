@@ -35,6 +35,9 @@ export async function POST(req: Request, { params }: { params: { leaderNationalI
     return NextResponse.json({ leader: dbLeader, success: true }, { status: 201 });
   } catch (err) {
     console.log(err);
+    if ((err as { message: string }).message === "notFoundIn3rdApp") {
+      return NextResponse.json({ error: "notFoundIn3rdApp" }, { status: 400 });
+    }
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Error al llenar los campos de los Activistas", zodErrors: err.issues }, { status: 400 });
     } else {
