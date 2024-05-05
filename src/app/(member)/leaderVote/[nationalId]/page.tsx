@@ -49,12 +49,12 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
 
       if (response.status === 400) {
         const error = responseData as { error: string };
-        console.log("error", error);
         toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
-        setError(error.error);
         router.push("/member");
       } else {
         toast.success("Votante Registrado!");
+        const { voter } = responseData as { success: true; voter: Voter };
+        router.push(`/voter/${voter.nationalId}`);
       }
     } catch (e) {
       const error = e as { error: string };
@@ -62,6 +62,8 @@ export default function LeaderVotePage(props: { params: { nationalId: string } }
       toast.error("Error al registrar al votante: " + error.error || "error desconocido.");
       router.push("/member");
     }
+
+    setIsLoading(false);
   };
 
   const handleSubmit = async (data: FormData) => {
